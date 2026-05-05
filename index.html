@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2D Beam/Frame FEA — ASA HW7</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+</head>
+<body>
+  <header>
+    <h1>2D Beam / Frame Finite Element Analysis</h1>
+    <p class="subtitle">
+      JavaScript port of the MATLAB FEA code from ASA Homework 7
+      (originally JK Guest, Civil Eng @ JHU; revised JP Connors).
+    </p>
+  </header>
+
+  <div class="controls">
+    <label>
+      Problem:
+      <select id="problem-select">
+        <option value="base">Problem 3 — Base case</option>
+        <option value="c">Problem 3c — Element 2 effectively a hinge</option>
+        <option value="d">Problem 3d — 4-element frame with diagonal</option>
+      </select>
+    </label>
+  </div>
+
+  <p id="description"></p>
+
+  <div class="view-controls">
+    <button class="view-btn active" data-view="undeformed">Undeformed mesh &amp; BCs</button>
+    <button class="view-btn" data-view="deformed">Deformed shape</button>
+    <button class="view-btn" data-view="reactions">Reactions</button>
+  </div>
+
+  <div id="plot"></div>
+
+  <h2>Numerical results</h2>
+  <pre id="results"></pre>
+
+  <footer>
+    Open this file directly in a browser — no server required.
+  </footer>
+
+  <script src="fea.js"></script>
+  <script src="problems.js"></script>
+  <script src="plot.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

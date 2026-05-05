@@ -1,0 +1,101 @@
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  margin: 0;
+  padding: 24px;
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+  color: #222;
+  background: #fafafa;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.5em;
+}
+
+.subtitle {
+  margin: 4px 0 16px;
+  color: #666;
+  font-size: 0.9em;
+}
+
+.controls {
+  margin: 12px 0;
+}
+
+.controls label {
+  font-weight: 500;
+}
+
+.controls select {
+  font-size: 1em;
+  padding: 4px 8px;
+  margin-left: 8px;
+}
+
+#description {
+  color: #444;
+  margin: 12px 0 18px;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.view-controls {
+  margin: 12px 0;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.view-btn {
+  padding: 6px 14px;
+  border: 1px solid #aaa;
+  background: #fff;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 0.95em;
+  font-family: inherit;
+}
+
+.view-btn.active {
+  background: #2563eb;
+  color: #fff;
+  border-color: #2563eb;
+}
+
+.view-btn:hover:not(.active) {
+  background: #eef2ff;
+}
+
+#plot {
+  width: 100%;
+  height: 540px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+h2 {
+  margin-top: 28px;
+  font-size: 1.05em;
+}
+
+#results {
+  background: #1e1e1e;
+  color: #e6e6e6;
+  padding: 14px 18px;
+  border-radius: 4px;
+  font-size: 0.85em;
+  line-height: 1.45;
+  overflow-x: auto;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  white-space: pre;
+}
+
+footer {
+  margin-top: 24px;
+  color: #888;
+  font-size: 0.8em;
+  text-align: center;
+}
