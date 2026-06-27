@@ -93,6 +93,117 @@ h2 {
   white-space: pre;
 }
 
+/* ---------- interactive model builder ---------- */
+
+.hidden { display: none; }
+
+.builder {
+  margin: 8px 0 20px;
+  padding: 16px 18px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.builder-note {
+  margin: 0 0 14px;
+  color: #555;
+  font-size: 0.85em;
+  line-height: 1.5;
+}
+
+.builder-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+  gap: 18px;
+  align-items: start;
+}
+
+/* never let a wide table overlap its neighbour — scroll within the cell instead */
+.builder-grid section { overflow-x: auto; }
+
+.builder-grid h3 {
+  margin: 0 0 8px;
+  font-size: 0.95em;
+  color: #2563eb;
+}
+
+.builder-table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.85em;
+}
+
+.builder-table th,
+.builder-table td {
+  border: 1px solid #e2e2e2;
+  padding: 2px 4px;
+  text-align: center;
+}
+
+.builder-table th {
+  background: #f4f6fb;
+  font-weight: 600;
+}
+
+.builder-table td.idx {
+  background: #fafafa;
+  color: #888;
+  font-variant-numeric: tabular-nums;
+}
+
+.builder-table input[type="number"] {
+  width: 54px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 2px 4px;
+  font-size: 0.95em;
+  font-family: inherit;
+}
+
+.mini-btn {
+  margin-top: 6px;
+  padding: 3px 8px;
+  border: 1px solid #bbb;
+  background: #f7f7f7;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8em;
+  font-family: inherit;
+}
+
+.mini-btn:hover { background: #eef2ff; }
+.mini-btn.del { margin: 0; border-color: #e3b1b1; color: #b32; padding: 1px 6px; }
+.mini-btn.del:hover { background: #fdecec; }
+
+.builder-actions {
+  margin-top: 16px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.run-btn {
+  padding: 8px 18px;
+  border: none;
+  background: #16a34a;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.95em;
+  font-family: inherit;
+  font-weight: 600;
+}
+
+.run-btn:hover { background: #15803d; }
+
+.builder-error {
+  margin: 8px 0 0;
+  color: #b32;
+  font-size: 0.85em;
+  min-height: 1em;
+}
+
 footer {
   margin-top: 24px;
   color: #888;

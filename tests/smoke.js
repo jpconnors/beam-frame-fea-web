@@ -43,12 +43,60 @@ const { chromium } = require("playwright");
     await page.screenshot({ path: path.resolve(__dirname, `smoke-${v}.png`) });
   }
 
+  // ---- exercise the interactive model builder ----
+  await page.selectOption("#problem-select", "custom");
+  await page.waitForTimeout(200);
+  const builderVisible = await page.isVisible("#builder");
+  console.log("builder visible:", builderVisible);
+  const nNodeRows = await page.$$eval(".node-row", (r) => r.length);
+  console.log("builder node rows:", nNodeRows);
+
+  // edit a load on the valid template topology and run
+  await page.fill('.load-row[data-node="2"] [data-f="Fx"]', "250");
+  await page.click('[data-act="run"]');
+  await page.waitForTimeout(300);
+  const afterRunResults = await page.textContent("#results");
+  const builderRan = /STRUCTURAL ANALYSIS COMPLETE/.test(afterRunResults);
+  console.log("builder produced results:", builderRan);
+  await page.screenshot({ path: path.resolve(__dirname, "smoke-builder.png"), fullPage: true });
+
+  // structural edits: add then delete a node should round-trip the row count
+  await page.click('[data-act="add-node"]');
+  await page.waitForTimeout(100);
+  const addedRows = await page.$$eval(".node-row", (r) => r.length);
+  await page.click('.node-row:last-child [data-act="del-node"]');
+  await page.waitForTimeout(100);
+  const delRows = await page.$$eval(".node-row", (r) => r.length);
+  console.log(`rows: add -> ${addedRows}, delete -> ${delRows}`);
+
+  // an inadequately-supported model must fail gracefully (no crash, shows message)
+  await page.click('[data-act="add-node"]');           // orphan node 5
+  await page.waitForTimeout(100);
+  await page.click('[data-act="run"]');
+  await page.waitForTimeout(200);
+  const gracMsg = await page.textContent("#results");
+  const graceful = /not adequately supported|Error during analysis/.test(gracMsg);
+  console.log("singular model handled gracefully:", graceful);
+
+  await page.click('[data-act="reset"]');
+  await page.waitForTimeout(200);
+  const resetRows = await page.$$eval(".node-row", (r) => r.length);
+  console.log("rows after reset:", resetRows);
+
+  if (!builderVisible || nNodeRows !== 4 || !builderRan ||
+      addedRows !== 5 || delRows !== 4 || !graceful || resetRows !== 4) {
+    console.log("builder checks FAILED");
+    process.exit(1);
+  }
+
   await browser.close();
 
   // Ignore CDN/network noise (Plotly is loaded from a CDN, which may be
   // unreachable in sandboxed CI); fail only on errors from our own scripts.
+  // "Singular global stiffness matrix" is expected — the builder test deliberately
+  // runs an under-supported model and asserts it is handled gracefully (see `graceful`).
   const real = errors.filter(
-    (e) => !/plot\.ly|net::|Failed to load resource|ERR_|Plotly is not defined/.test(e)
+    (e) => !/plot\.ly|net::|Failed to load resource|ERR_|Plotly is not defined|Singular global stiffness matrix/.test(e)
   );
   if (real.length) {
     console.log("SCRIPT ERRORS:\n  " + real.join("\n  "));

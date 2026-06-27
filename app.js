@@ -92,18 +92,33 @@ function renderPlot() {
   }
 }
 
-function selectProblem(key) {
-  currentProblem = PROBLEMS[key]();
+// Run the analysis for a fully-built problem object and refresh the UI.
+// Shared by the preset problems and the interactive builder.
+function setActiveProblem(problem) {
+  currentProblem = problem;
   try {
-    currentResults = runAnalysis(currentProblem);
+    currentResults = runAnalysis(problem);
   } catch (err) {
-    document.getElementById("results").textContent = "Error during analysis: " + err.message;
+    document.getElementById("results").textContent =
+      "Error during analysis: " + err.message +
+      "\n(A singular stiffness matrix usually means the model is not adequately supported.)";
+    document.getElementById("description").textContent = problem.description || "";
     console.error(err);
     return;
   }
   document.getElementById("description").textContent = currentProblem.description;
   document.getElementById("results").textContent = formatResults(currentProblem, currentResults);
   renderPlot();
+}
+
+function selectProblem(key) {
+  if (key === "custom") {
+    Builder.show();
+    Builder.run();   // build + analyze the current builder state
+    return;
+  }
+  Builder.hide();
+  setActiveProblem(PROBLEMS[key]());
 }
 
 function selectView(v) {
@@ -115,6 +130,8 @@ function selectView(v) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  Builder.init({ onRun: setActiveProblem });
+
   document.getElementById("problem-select").addEventListener("change", e => {
     selectProblem(e.target.value);
   });
