@@ -86,6 +86,9 @@ function renderPlot() {
     case "undeformed": plotUndeformed(currentProblem, "plot"); break;
     case "deformed":   plotDeformed(currentProblem, currentResults, "plot"); break;
     case "reactions":  plotReactions(currentProblem, currentResults, "plot"); break;
+    case "axial":
+    case "shear":
+    case "moment":     plotInternalForce(currentProblem, currentResults, "plot", currentView); break;
   }
 }
 

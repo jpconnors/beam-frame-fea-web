@@ -271,6 +271,105 @@ function plotDeformed(problem, results, divId) {
   Plotly.newPlot(divId, traces, layout, { responsive: true, displaylogo: false });
 }
 
+// ------------------- view: internal force diagrams (N / V / M) -------------------
+
+// Internal force resultants at the two ends of an element, derived from the
+// local end-force vector feLocal = [N1, V1, M1, N2, V2, M2]. Conventions
+// (verified against the cantilever and simply-supported test cases):
+//   axial : tension positive            -> [-N1,  +N2]
+//   shear :                             -> [+V1,  -V2]
+//   moment: sagging positive            -> [-M1,  +M2]
+// With no span/distributed loads the resultant varies linearly end-to-end.
+function _elementDiagramValues(results, e, which) {
+  const fl = results.feLocal[e];
+  switch (which) {
+    case "axial":  return [-fl[0],  fl[3]];
+    case "shear":  return [ fl[1], -fl[4]];
+    case "moment": return [-fl[2],  fl[5]];
+    default:       return [0, 0];
+  }
+}
+
+const _DIAGRAM_META = {
+  axial:  { label: "Axial (N)",  color: "purple",     unit: (u) => u.force },
+  shear:  { label: "Shear (V)",  color: "teal",       unit: (u) => u.force },
+  moment: { label: "Moment (M)", color: "darkorange", unit: (u) => `${u.force}·${u.length}` },
+};
+
+function _rgba(name, a) {
+  const map = { purple: "128,0,128", teal: "0,128,128", darkorange: "255,140,0" };
+  return `rgba(${map[name] || "100,100,100"},${a})`;
+}
+
+function plotInternalForce(problem, results, divId, which) {
+  const { xn, ien, nel, units } = problem;
+  const meta = _DIAGRAM_META[which];
+  const Lcar = _Lcar(xn);
+
+  const vals = [];
+  let vmax = 0;
+  for (let e = 0; e < nel; e++) {
+    const v = _elementDiagramValues(results, e, which);
+    vals.push(v);
+    vmax = Math.max(vmax, Math.abs(v[0]), Math.abs(v[1]));
+  }
+  const scale = vmax > 1e-12 ? (0.18 * Lcar) / vmax : 0;
+
+  const traces = [];
+  traces.push(_undeformedMeshTrace(xn, ien, nel, { color: "royalblue", width: 3 }));
+
+  const lblX = [], lblY = [], lblT = [];
+  for (let e = 0; e < nel; e++) {
+    const n1 = ien[0][e], n2 = ien[1][e];
+    const x1 = xn[0][n1], y1 = xn[1][n1];
+    const x2 = xn[0][n2], y2 = xn[1][n2];
+    let L = Math.hypot(x2 - x1, y2 - y1);
+    if (L === 0) L = 1e-6;
+    // local unit normal (90° left of the element direction)
+    const nx = -(y2 - y1) / L, ny = (x2 - x1) / L;
+    const [v1, v2] = vals[e];
+
+    const px1 = x1 + nx * scale * v1, py1 = y1 + ny * scale * v1;
+    const px2 = x2 + nx * scale * v2, py2 = y2 + ny * scale * v2;
+
+    traces.push({
+      x: [x1, px1, px2, x2, x1],
+      y: [y1, py1, py2, y2, y1],
+      mode: "lines",
+      fill: "toself",
+      fillcolor: _rgba(meta.color, 0.25),
+      line: { color: meta.color, width: 1.5 },
+      name: meta.label,
+      legendgroup: which,
+      showlegend: e === 0,
+      hoverinfo: "text",
+      text: `elem ${e + 1}: ${v1.toFixed(1)} → ${v2.toFixed(1)} ${meta.unit(units)}`,
+    });
+
+    if (Math.abs(v1) > 1e-6) { lblX.push(px1); lblY.push(py1); lblT.push(v1.toFixed(1)); }
+    if (Math.abs(v2) > 1e-6) { lblX.push(px2); lblY.push(py2); lblT.push(v2.toFixed(1)); }
+  }
+
+  traces.push({
+    x: lblX, y: lblY, mode: "text", text: lblT,
+    textfont: { size: 10, color: meta.color },
+    textposition: "middle center",
+    hoverinfo: "skip", showlegend: false,
+  });
+  traces.push(_nodeLabelTraces(xn));
+
+  const layout = {
+    title: `${meta.label} diagram — values in ${meta.unit(units)} ` +
+           `(peak |${which[0].toUpperCase()}| = ${vmax.toPrecision(4)})`,
+    xaxis: { title: `x (${units.length})`, scaleanchor: "y", scaleratio: 1, zeroline: false },
+    yaxis: { title: `y (${units.length})`, zeroline: false },
+    margin: { t: 50, b: 60, l: 60, r: 30 },
+    showlegend: true,
+  };
+
+  Plotly.newPlot(divId, traces, layout, { responsive: true, displaylogo: false });
+}
+
 // ------------------- view 3: reactions -------------------
 
 function plotReactions(problem, results, divId) {

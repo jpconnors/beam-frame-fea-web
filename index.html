@@ -5,7 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>2D Beam/Frame FEA — ASA HW7</title>
   <link rel="stylesheet" href="styles.css" />
-  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+  <!-- Vendored Plotly so the app works fully offline; fall back to the CDN. -->
+  <script src="vendor/plotly-2.35.2.min.js" charset="utf-8"></script>
+  <script>
+    window.Plotly || document.write(
+      '<script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"><\/script>'
+    );
+  </script>
 </head>
 <body>
   <header>
@@ -33,6 +39,9 @@
     <button class="view-btn active" data-view="undeformed">Undeformed mesh &amp; BCs</button>
     <button class="view-btn" data-view="deformed">Deformed shape</button>
     <button class="view-btn" data-view="reactions">Reactions</button>
+    <button class="view-btn" data-view="axial">Axial (N)</button>
+    <button class="view-btn" data-view="shear">Shear (V)</button>
+    <button class="view-btn" data-view="moment">Moment (M)</button>
   </div>
 
   <div id="plot"></div>
@@ -45,6 +54,7 @@
   </footer>
 
   <script src="fea.js"></script>
+  <script src="model.js"></script>
   <script src="problems.js"></script>
   <script src="plot.js"></script>
   <script src="app.js"></script>

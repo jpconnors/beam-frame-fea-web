@@ -1,0 +1,10 @@
+{
+  "name": "beam-frame-fea-web",
+  "version": "1.0.0",
+  "description": "2D Euler-Bernoulli beam/frame finite element analysis in the browser (JS port of ASA HW7 MATLAB code).",
+  "scripts": {
+    "test": "node tests/run.js"
+  },
+  "license": "MIT",
+  "private": true
+}

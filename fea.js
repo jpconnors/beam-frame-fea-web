@@ -207,7 +207,8 @@ function runAnalysis(p) {
   const elems = [];
   for (let i = 0; i < nel; i++) {
     const nodes = [ien[0][i], ien[1][i]];
-    const stiff = elementStiffness(E, A[i], Iz[i], xn, nodes, nen, ndf, nsd);
+    const Ei = Array.isArray(E) ? E[i] : E;   // accept scalar (uniform) or per-element E
+    const stiff = elementStiffness(Ei, A[i], Iz[i], xn, nodes, nen, ndf, nsd);
     elems.push({ ...stiff, nodes });
   }
 
@@ -288,5 +289,12 @@ function runAnalysis(p) {
     dcomp, Rcomp, axial, shear, moment,
     elems, neq, neqr, id, idr,
     Fe, feLocal,
+  };
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = {
+    runAnalysis, elementStiffness, numberEq, getLocalId,
+    solveLinear, transpose, matmul, matvec, zeros1D, zeros2D,
   };
 }

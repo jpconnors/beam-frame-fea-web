@@ -119,3 +119,7 @@ const PROBLEMS = {
   c:    problemC,
   d:    problemD,
 };
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = { PROBLEMS, problemBase, problemC, problemD };
+}
