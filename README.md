@@ -1,8 +1,7 @@
 # 2D Beam / Frame Finite Element Analysis
 
 A browser-based 2D Euler–Bernoulli beam/frame finite-element solver — a
-JavaScript port of the MATLAB FEA code from ASA Homework 7 (originally
-JK Guest, Civil Eng @ JHU; revised JP Connors).
+JavaScript port of the MATLAB FEA code
 
 No build step and no server required: open `index.html` in any browser.
 Plotly is vendored locally (`vendor/`), so it also works fully offline.
