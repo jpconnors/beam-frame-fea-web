@@ -1,5 +1,5 @@
 // fea.js — JS port of the MATLAB beam/frame FEA engine
-// Originally: JK Guest (JHU), JP Connors (HW7, Fall 2016)
+// Author: JP Connors 
 //
 // Index conventions:
 //   - All "internal" arrays are 0-indexed (xn, ien, idb, dcomp, etc.).
